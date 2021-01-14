@@ -35,6 +35,7 @@ void initializeInstructionCache()
 
 int compare_inst(uint32_t address)
 {
+    set_num_inst=(address>>5)%64;                   //cache组号
     mem_tag_inst=address>>11;                       //主存标记
 
     #ifdef DEBUG
