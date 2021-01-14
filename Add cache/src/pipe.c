@@ -141,7 +141,7 @@ void pipe_stage_mem()
     /*if (op->is_mem)
         val = mem_read_32(op->mem_addr & ~3);*/
 
-    //----------------------------------------------
+    /* 嵌入Dcache */
     if (op->is_mem)
     {
         if(compare_data(op->mem_addr & ~3))
@@ -154,7 +154,6 @@ void pipe_stage_mem()
                 return ;
         }
     }
-    //----------------------------------------------
     
 
     switch (op->opcode) {
@@ -212,8 +211,8 @@ void pipe_stage_mem()
                 case 3: val = (val & 0x00FFFFFF) | ((op->mem_value & 0xFF) << 24); break;
             }
 
-            //mem_write_32(op->mem_addr & ~3, val);
-            //writeToMainMemory(op->mem_addr & ~3, val);
+            /* mem_write_32(op->mem_addr & ~3, val); */
+            /* writeToMainMemory(op->mem_addr & ~3, val); */
             writeToCache(op->mem_addr & ~3, val);
 
             break;
@@ -230,15 +229,15 @@ void pipe_stage_mem()
             printf("new word %08x\n", val);
 #endif
 
-            //mem_write_32(op->mem_addr & ~3, val);
-            //writeToMainMemory(op->mem_addr & ~3, val);
+            /* mem_write_32(op->mem_addr & ~3, val); */
+            /* writeToMainMemory(op->mem_addr & ~3, val); */
             writeToCache(op->mem_addr & ~3, val);
             break;
 
         case OP_SW:
             val = op->mem_value;
-            //mem_write_32(op->mem_addr & ~3, val);
-            //writeToMainMemory(op->mem_addr & ~3, val);
+            /* mem_write_32(op->mem_addr & ~3, val); */
+            /* writeToMainMemory(op->mem_addr & ~3, val); */
             writeToCache(op->mem_addr & ~3, val);
             break;
     }
@@ -694,14 +693,13 @@ void pipe_stage_fetch()
     memset(op, 0, sizeof(Pipe_Op));
     op->reg_src1 = op->reg_src2 = op->reg_dst = -1;
 
-    //op->instruction = mem_read_32(pipe.PC);
+    /* op->instruction = mem_read_32(pipe.PC); */
 
-    //嵌入cache
-
+    /* 嵌入Icache */
     #ifdef DEBUG
         printf("-----%x\n",pipe.PC);
     #endif
-    if(compare_inst(pipe.PC))//hit
+    if(compare_inst(pipe.PC))   //hit
     {
         #ifdef DEBUG
             printf("hit\n");
